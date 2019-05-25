@@ -1,0 +1,72 @@
+./workspace_hasegawa/01_pix2pix_model/00_train/use_model/D について
+~学習 phase~
+使うフォルダ : chainer-pix2pix_d_no_noise , chainer-pix2pix_d_noise(中身はほとんど同じ)
+中身の説明(フォルダ)
+・data : 傷画像の傷の位置を 256-256 にプロップしたもの
+・data2 : 元画像の傷の位置と同じ場所をプロップしたもの
+・data3 : mask 画像、傷画像と元画像の差を取って作ったもの
+・result : 学習結果が保存される
+中身の説明(コード)
+・facade_dataset.py : データセットを呼び込むコード
+・facade_visualizer.py : データを可視化してくれるコード
+・net.py : ネットワークを定義したコード
+(注意 : SSD の学習の際に必要となる input の最小サイズが 300-300 なので、pix2pix の生成段階
+でそうなるように書き換えて学習を行うと後々便利であると思う)
+・updater.py : モデルの weight を update していくためのコード
+・train_facade.py : メインコード
+~生成 phase~
+使うフォルダ : create_no_noise , create_noise (中身はほとんど同じ)
+中身の説明(フォルダ)
+・detect : input となる 256-256 画像
+・mask : input となる 256-256 画像
+・image_ : 生成に失敗した画像
+・sample : 元の画像
+・result : 生成した numpy ファイル、生成画像の元となる numpy ファイルとなる
+・position : detect に入っている画像の、prop した座標位置
+・noise : 生成データの整形手続き等のファイルが入っている
+中身の説明(ファイル)
+・create.py : 画像を生成し、numpy ファイルに保存する
+・create2.py : 生成した numpy ファイルから画像を生成する
+・facade_dataset.py : データセットの変換を行う
+・final.py : 生成した画像(prop したサイズになっている)を元の画像に戻す
+・net.py : ネットワークを定義したコード
+・position.py : 生成において必要な画像を作るためのコード、画像でクリックした位置の座標を保
+存する
+・prop.py : 生成において必要な画像を作るためのコード、position.py で保存した位置座標から画
+像をプロップする(主に、position.py -> prop.py の順でコードを走らせれば、input が作れる)(position.py -> prop.py で input となる画像を作る、
+create.py -> create2.py -> final.py の順に生成する)
+./workspace_hasegawa/01_pix2pix_model/01_create/D_256_divide_create/noises について
+中身の説明(フォルダ)
+・STOCK, backup : 無視して大丈夫です
+・image : 生成した画像を入れておくフォルダ
+・mask : マスク画像を入れておくフォルダ
+・noise_mask_xml : マスク画像の xml ファイル、これをもとに生成画像の xml ファイルを作るこ
+とで少しでも楽をしようという魂胆
+・new_files : 256-256 の時の xml ファイル
+・final_xml : 300-300 の時の xml ファイル
+・image_300-300 : 300-300 の画像
+中身の説明(ファイル)
+・300-300_from_256-256.ipynb : 256-256 の画像を 300-300 にするコード
+・xml_create_from_mask.ipynb : 256-256 の画像の xml ファイルから 300-300 の xml に転換する
+./workspace_hasegawa/-1_pix2pix_model/01_create/(D_256_divide_create 以外のフォルダ)
+pix2pix を用いたシート画像生成フォルダ、使い方は、create_noise や create_no_noise と同じ
+./workspace_hasegawa/02_create_xml/について
+基本的に
+http://ai-coordinator.jp/ssd-keras-train
+に書いてあるコードです。以前に解説資料や説明等はしており、またサイトに使い方も載っている
+ので省略します。
+./workspace_hasegawa/03_ssd_model
+~使い方~
+$ source ssd/bin/activate
+#仮想環境の立ち上げ
+・PASCAL_VOC 内の Annotations に xml ファイルを、JPEGImages に jpg ファイルを入れる
+・get_data_from_XML.py のラベル名を xml ファイルのものと一致させる
+$ python get_data_from_XML.py #学習データセットの作成、VOC.2007.pkl ができる
+$ python train.py #学習開始
+(検証方法は NAS の進捗管理ファイルに記入済み)./workspace_hasegawa/04_ssd_small_object
+~使い方~
+(学習方法は、進捗管理ファイルに記入済み)
+検証は ./notebooks/SOD_with_realsense.ipynb でできるようにしてある
+./workspace_hasegawa/05_seat_pix2pix/
+過去の残骸
+もし、他の異教画像生成 phase に戻るようであれば、ここを参照
